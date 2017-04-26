@@ -1,21 +1,12 @@
 package crackApp;
-//import java.util.Base64;
 import org.bouncycastle.crypto.PBEParametersGenerator;
-//import org.bouncycastle.crypto.generators.*; //p000a.p001a.p002a.p006c.*
-import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator; //p000a.p001a.p002a.p006c.C0010a;
-//import org.bouncycastle.crypto.Mac; // import p000a.p001a.p002a.C0012i;
+import org.bouncycastle.crypto.generators.PKCS5S2ParametersGenerator; 
 import org.bouncycastle.crypto.digests.SHA256Digest;
-//import org.bouncycastle.crypto.BufferedBlockCipher;
-//import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.paddings.PaddedBufferedBlockCipher;
-//import org.bouncycastle.util.StreamParser;
-//import org.bouncycastle.util.Strings;
 import org.bouncycastle.util.encoders.Base64;
 import org.bouncycastle.crypto.params.ParametersWithIV;
-//import org.bouncycastle.crypto.params.ParametersWithSalt;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.engines.AESEngine;
-//import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.modes.CBCBlockCipher;
 
 public class SafeKeepCrack {
@@ -58,7 +49,6 @@ public class SafeKeepCrack {
 			}
 		}
 	}
-	
 	public static byte[] getSecretArray(String str) throws Exception{
 		String xmlString="Kec1leNIw8qTjrvaCgyhgnoho6YtxVc0/hVrHme0CeFQD+WqvG8HvnXHUYoTEgdQlXSG+c4KA9Zi3B3r/bl7eg==";
 		byte[] pinByteArr=SafeKeepCrack.getKeyFromPin(str); // this is actually the key to decrypt the xmlString
@@ -87,26 +77,22 @@ public class SafeKeepCrack {
 	}
 	static final byte[] mangle(PaddedBufferedBlockCipher cipher,byte[] bArr) throws Exception{
 		int outputSize=cipher.getOutputSize(bArr.length);
-		int blockSize=cipher.getBlockSize();
-		int c=bArr[blockSize-1] & 0xff;
 		byte[] bArr2=new byte[cipher.getOutputSize(bArr.length)];
 		int a = cipher.processBytes(bArr,0,bArr.length,bArr2,0);
-		// pad block corrupted ??? --> using the wrong key causes that error !!! use try-catch in main
 		a+=cipher.doFinal(bArr2, a);
-		
 		byte[] outArr=new byte[a];
 		System.arraycopy(bArr2,0,outArr,0,a);
 		return outArr;
 	}
 	
 	static final byte[] getKeyFromPin(String str) throws Exception { // str == pin value
-      Integer valueOf = Integer.valueOf(4096); // 512
-      Integer valueOf2 = Integer.valueOf(256); // 32
-      byte[] bytes = "7s1SZS*fX)7J6_5,3ksf|cdTC8W~{r~T<NME[Q2:|q`X*%|L(pid0v:':*O7y=ve".getBytes();
-      char[] toCharArray = str.toCharArray();
-      PKCS5S2ParametersGenerator PPG = new PKCS5S2ParametersGenerator(new SHA256Digest());
-      PPG.init(PBEParametersGenerator.PKCS5PasswordToUTF8Bytes(toCharArray), bytes, valueOf.intValue());
-      return ((KeyParameter) PPG.generateDerivedParameters(valueOf2.intValue())).getKey();
+	      Integer valueOf = Integer.valueOf(4096); // 512
+	      Integer valueOf2 = Integer.valueOf(256); // 32
+	      byte[] bytes = "7s1SZS*fX)7J6_5,3ksf|cdTC8W~{r~T<NME[Q2:|q`X*%|L(pid0v:':*O7y=ve".getBytes();
+	      char[] toCharArray = str.toCharArray();
+	      PKCS5S2ParametersGenerator PPG = new PKCS5S2ParametersGenerator(new SHA256Digest());
+	      PPG.init(PBEParametersGenerator.PKCS5PasswordToUTF8Bytes(toCharArray), bytes, valueOf.intValue());
+	      return ((KeyParameter) PPG.generateDerivedParameters(valueOf2.intValue())).getKey();
   }
   
 }
